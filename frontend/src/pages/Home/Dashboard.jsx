@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../Context/userContext';
 
+const BASE_URL = import.meta.env.VITE_API_URL; // ← add this
+
 const Dashboard = () => {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ const Dashboard = () => {
 
   const fetchSessions = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/sessions/my-sessions', {
+      const res = await fetch(`${BASE_URL}/api/sessions/my-sessions`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -35,7 +37,7 @@ const Dashboard = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const aiRes = await fetch('http://localhost:8000/api/ai/generate-questions', {
+      const aiRes = await fetch(`${BASE_URL}/api/ai/generate-questions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +51,7 @@ const Dashboard = () => {
         }),
       });
       const questions = await aiRes.json();
-      const sessionRes = await fetch('http://localhost:8000/api/sessions/create', {
+      const sessionRes = await fetch(`${BASE_URL}/api/sessions/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +82,7 @@ const Dashboard = () => {
 
   const handleDeleteSession = async (sessionId) => {
     try {
-      await fetch(`http://localhost:8000/api/sessions/${sessionId}`, {
+      await fetch(`${BASE_URL}/api/sessions/${sessionId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -92,7 +94,7 @@ const Dashboard = () => {
 
   const handlePinSession = async (sessionId) => {
     try {
-      await fetch(`http://localhost:8000/api/sessions/${sessionId}/pin`, {
+      await fetch(`${BASE_URL}/api/sessions/${sessionId}/pin`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -104,12 +106,10 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-blue-50">
-      {/* Navbar — name + logout on LEFT, title on RIGHT */}
       <nav className="bg-white shadow-sm px-8 py-4 flex justify-between items-center">
         <h1 className="text-xl font-extrabold text-blue-900">
           Interview <span className="text-blue-500">Prep AI</span>
         </h1>
-        
         <div className="flex items-center gap-4">
           <span className="text-slate-600 font-medium">👋 {user?.name}</span>
           <button
@@ -120,20 +120,19 @@ const Dashboard = () => {
           </button>
         </div>
       </nav>
-      {/* Hero Heading */}
-<div className="text-center mb-10 mt-10">
-  <h1 className="text-5xl font-extrabold text-blue-900 mb-2">
-    Ace Your Next Interview 🚀
-  </h1>
-  <h2 className="text-2xl font-semibold text-blue-500 mb-2">
-    Practice. Improve. Get Hired.
-  </h2>
-  <p className="text-slate-800 text-base">
-    Your AI-powered interview prep companion — study smarter, not harder.
-  </p>
-</div>
 
-      {/* Main Content */}
+      <div className="text-center mb-10 mt-10">
+        <h1 className="text-5xl font-extrabold text-blue-900 mb-2">
+          Ace Your Next Interview 🚀
+        </h1>
+        <h2 className="text-2xl font-semibold text-blue-500 mb-2">
+          Practice. Improve. Get Hired.
+        </h2>
+        <p className="text-slate-800 text-base">
+          Your AI-powered interview prep companion — study smarter, not harder.
+        </p>
+      </div>
+
       <div className="max-w-5xl mx-auto px-6 py-10">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -148,7 +147,6 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Sessions Grid */}
         {sessions.length === 0 ? (
           <div className="text-center py-20 text-slate-400">
             <p className="text-5xl mb-4">🎯</p>
@@ -201,21 +199,18 @@ const Dashboard = () => {
                   </button>
                 </div>
 
-                {/* 🎯 Mock Interview Button */}
                 <button
                   onClick={() => navigate(`/mock-interview/${session._id}`)}
                   className="w-full py-2 bg-purple-600 text-white text-sm font-semibold rounded-xl hover:bg-purple-700 transition"
                 >
                   🎯 Start Mock Interview
                 </button>
-
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* Modal — unchanged */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">

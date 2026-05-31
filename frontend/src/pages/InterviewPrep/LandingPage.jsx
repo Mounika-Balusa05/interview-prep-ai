@@ -2,6 +2,8 @@ import ReactMarkdown from 'react-markdown';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
+const BASE_URL = import.meta.env.VITE_API_URL; // ← add this
+
 const LandingPage = () => {
   const { sessionId } = useParams();
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ const LandingPage = () => {
 
   const fetchSession = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/sessions/${sessionId}`, {
+      const res = await fetch(`${BASE_URL}/api/sessions/${sessionId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -38,7 +40,7 @@ const LandingPage = () => {
     setLoadingExplanation(true);
     setExplanation(null);
     try {
-      const res = await fetch('http://localhost:8000/api/ai/generate-explanation', {
+      const res = await fetch(`${BASE_URL}/api/ai/generate-explanation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,7 +59,7 @@ const LandingPage = () => {
 
   const handlePinQuestion = async (questionId) => {
     try {
-      await fetch(`http://localhost:8000/api/questions/${questionId}/pin`, {
+      await fetch(`${BASE_URL}/api/questions/${questionId}/pin`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -77,7 +79,6 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-blue-50">
-      {/* Navbar */}
       <nav className="bg-white shadow-sm px-8 py-4 flex justify-between items-center">
         <h1 className="text-xl font-extrabold text-blue-900">
           Interview <span className="text-blue-500">Prep AI</span>
@@ -91,7 +92,6 @@ const LandingPage = () => {
       </nav>
 
       <div className="max-w-6xl mx-auto px-6 py-8">
-        {/* Session Info */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-blue-900">{session?.role}</h2>
           <p className="text-slate-500 text-sm mt-1">
@@ -100,7 +100,6 @@ const LandingPage = () => {
         </div>
 
         <div className="flex gap-6">
-          {/* Questions List */}
           <div className="w-1/3 bg-white rounded-2xl shadow-md p-4 h-fit">
             <h3 className="text-lg font-bold text-blue-900 mb-4">Questions</h3>
             <div className="space-y-2">
@@ -123,7 +122,6 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* Question Detail */}
           <div className="flex-1">
             {selectedQuestion && (
               <div className="bg-white rounded-2xl shadow-md p-6">
@@ -142,9 +140,9 @@ const LandingPage = () => {
                 <div className="bg-blue-50 rounded-xl p-4 mb-4">
                   <h4 className="text-sm font-bold text-blue-900 mb-2">Answer:</h4>
                   <div className="text-slate-600 text-sm prose prose-sm max-w-none">
-  <ReactMarkdown>{selectedQuestion.answer}</ReactMarkdown>
-</div>
+                    <ReactMarkdown>{selectedQuestion.answer}</ReactMarkdown>
                   </div>
+                </div>
 
                 <button
                   onClick={() => handleGetExplanation(selectedQuestion)}
@@ -158,8 +156,8 @@ const LandingPage = () => {
                   <div className="mt-4 bg-purple-50 rounded-xl p-4">
                     <h4 className="text-sm font-bold text-purple-900 mb-2">{explanation.title}</h4>
                     <div className="text-slate-600 text-sm prose prose-sm max-w-none">
-  <ReactMarkdown>{explanation.explanation}</ReactMarkdown>
-</div>
+                      <ReactMarkdown>{explanation.explanation}</ReactMarkdown>
+                    </div>
                   </div>
                 )}
               </div>
@@ -172,5 +170,3 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-
-

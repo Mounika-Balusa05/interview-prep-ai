@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 const MockInterview = () => {
   const { sessionId } = useParams();
   const navigate = useNavigate();
@@ -15,9 +17,9 @@ const MockInterview = () => {
   const [finished, setFinished] = useState(false);
   const [scores, setScores] = useState([]);
   const [evaluating, setEvaluating] = useState(false);
-  const [isListening, setIsListening] = useState(false); // ← new
+  const [isListening, setIsListening] = useState(false);
   const timerRef = useRef(null);
-  const recognitionRef = useRef(null); // ← new
+  const recognitionRef = useRef(null);
 
   useEffect(() => {
     fetchSession();
@@ -52,12 +54,10 @@ const MockInterview = () => {
     recognition.lang = 'en-US';
     recognition.continuous = true;
     recognition.interimResults = false;
-
     recognition.onresult = (event) => {
       const transcript = event.results[event.results.length - 1][0].transcript;
       setUserAnswer((prev) => prev + ' ' + transcript);
     };
-
     recognition.start();
     recognitionRef.current = recognition;
     setIsListening(true);
@@ -70,7 +70,7 @@ const MockInterview = () => {
 
   const fetchSession = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/sessions/${sessionId}`, {
+      const res = await fetch(`${BASE_URL}/api/sessions/${sessionId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -100,12 +100,11 @@ const MockInterview = () => {
   const handleNext = (autoSkip = false) => {
     clearInterval(timerRef.current);
     window.speechSynthesis.cancel();
-    stopListening(); // ← stop voice when moving to next question
+    stopListening();
     const savedAnswer = autoSkip ? '(No answer — time ran out)' : userAnswer;
     const updatedAnswers = [...answers, { question: questions[currentIndex].question, answer: savedAnswer }];
     setAnswers(updatedAnswers);
     setUserAnswer('');
-
     if (currentIndex + 1 >= questions.length) {
       evaluateAll(updatedAnswers);
     } else {
@@ -119,7 +118,7 @@ const MockInterview = () => {
     try {
       const results = await Promise.all(
         allAnswers.map(async ({ question, answer }) => {
-          const res = await fetch('http://localhost:8000/api/ai/evaluate-answer', {
+          const res = await fetch(`${BASE_URL}/api/ai/evaluate-answer`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -146,7 +145,7 @@ const MockInterview = () => {
   };
 
   const totalScore = scores.reduce((sum, s) => sum + (Number(s.score) || 0), 0);
-    const maxScore = scores.length * 10;
+  const maxScore = scores.length * 10;
 
   if (loading) return (
     <div className="min-h-screen bg-purple-50 flex items-center justify-center">
@@ -170,18 +169,18 @@ const MockInterview = () => {
               {scores.map((item, i) => (
                 <div key={i} className="bg-white rounded-2xl shadow-md p-5">
                   <div className="flex justify-between items-center mb-2">
-                    <p className="font-bold text-blue-900 text-xl">Q{i + 1}. {item.question}</p>
+                    <p className="font-bold text-blue-900 text-lg">Q{i + 1}. {item.question}</p>
                     <span className={`text-sm font-bold px-3 py-1 rounded-full ${
-!item.score ? 'bg-gray-100 text-gray-400' :
-item.score >= 7 ? 'bg-green-100 text-green-700' :
-item.score >= 4 ? 'bg-yellow-100 text-yellow-700' :
-'bg-red-100 text-red-700'
-}`}>
-{item.score ? `${item.score}/10` : 'N/A'}
-</span>
+                      !item.score ? 'bg-gray-100 text-gray-400' :
+                      item.score >= 7 ? 'bg-green-100 text-green-700' :
+                      item.score >= 4 ? 'bg-yellow-100 text-yellow-700' :
+                      'bg-red-100 text-red-700'
+                    }`}>
+                      {item.score ? `${item.score}/10` : 'N/A'}
+                    </span>
                   </div>
-                    <p className="text-base text-slate-500 mb-2"><span className="font-semibold">Your answer:</span> {item.answer}</p>
-                    <p className="text-base text-purple-700 bg-purple-50 rounded-lg p-2">{item.feedback}</p>
+                  <p className="text-base text-slate-500 mb-2"><span className="font-semibold">Your answer:</span> {item.answer}</p>
+                  <p className="text-base text-purple-700 bg-purple-50 rounded-lg p-2">{item.feedback}</p>
                 </div>
               ))}
             </div>
@@ -209,11 +208,9 @@ item.score >= 4 ? 'bg-yellow-100 text-yellow-700' :
             ⏱ {formatTime(timeLeft)}
           </p>
         </div>
-
         <div className="w-full bg-purple-100 rounded-full h-2 mb-6">
           <div className="bg-purple-600 h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
         </div>
-
         <div className="bg-white rounded-2xl shadow-md p-6 mb-4">
           <p className="text-lg font-bold text-blue-900 mb-4">{current.question}</p>
           <textarea
@@ -223,14 +220,10 @@ item.score >= 4 ? 'bg-yellow-100 text-yellow-700' :
             rows={6}
             className="w-full px-4 py-3 rounded-xl border border-purple-200 bg-purple-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none"
           />
-
-          {/* 🎙️ Voice button */}
           <button
             onClick={isListening ? stopListening : startListening}
             className={`mt-3 w-full py-2 rounded-xl font-semibold text-sm transition ${
-              isListening
-                ? 'bg-red-500 text-white hover:bg-red-600'
-                : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+              isListening ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
             }`}
           >
             {isListening ? '🔴 Stop Recording' : '🎙️ Speak Answer'}
@@ -239,14 +232,12 @@ item.score >= 4 ? 'bg-yellow-100 text-yellow-700' :
             <p className="text-center text-xs text-red-400 mt-2 animate-pulse">Listening... speak now</p>
           )}
         </div>
-
         <button
           onClick={() => handleNext(false)}
           className="w-full py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition"
         >
           {currentIndex + 1 === questions.length ? 'Finish Interview 🎯' : 'Next Question →'}
         </button>
-
       </div>
     </div>
   );

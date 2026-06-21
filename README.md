@@ -1,7 +1,7 @@
 frontend link :  https://interview-prep-ai-topaz.vercel.app/login
 backend link : https://interview-prep-ai-dg2z.onrender.com
 
-# 🎯 CrucibleAI
+# 🎯 Interview Prep AI
 
 > An AI-powered interview preparation platform that helps students and job seekers practice smarter and get hired faster.
 

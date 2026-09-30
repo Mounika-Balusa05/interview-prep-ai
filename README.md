@@ -1,5 +1,4 @@
-frontend link :  https://interview-prep-ai-topaz.vercel.app/login
-backend link : https://interview-prep-ai-dg2z.onrender.com
+
 
 # 🎯 Interview Prep AI
 
@@ -52,19 +51,9 @@ This project helped me learn full-stack development, REST APIs, AI integration, 
 - **Bcrypt.js** — Password hashing
 - **Google Gemini API** — AI question generation, explanations, and answer evaluation
 
-### Deployment
-- **Vercel** — Frontend hosting
-- **Render** — Backend hosting
-- **MongoDB Atlas** — Cloud database
 
 ---
 
-## 🚀 Live Demo
-
-🌐 **App:** [https://interview-prep-ai-topaz.vercel.app](https://interview-prep-ai-topaz.vercel.app)  
-⚙️ **Backend:** [https://interview-prep-ai-dg2z.onrender.com](https://interview-prep-ai-dg2z.onrender.com)
-
----
 
 ## 🗂️ Project Structure & Explanation
 

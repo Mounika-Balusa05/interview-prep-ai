@@ -16,7 +16,7 @@ So I built **Interview Prep AI** — a full-stack web application that:
 - Simulates a **real mock interview** with a timer and voice support
 - **Scores your answers** using AI and gives constructive feedback
 
-This project helped me learn full-stack development, REST APIs, AI integration, authentication — all in one real-world project.
+This project helped me learn full-stack development, REST APIs, AI integration and authentication — all in one real-world project.
 
 
 ---

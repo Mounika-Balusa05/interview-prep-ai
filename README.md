@@ -19,21 +19,6 @@ So I built **Interview Prep AI** — a full-stack web application that:
 
 This project helped me learn full-stack development, REST APIs, AI integration, authentication, and cloud deployment — all in one real-world project.
 
----
-
-## 📸 Screenshots
-
-### 🏠 Dashboard
-<!-- Add your dashboard screenshot here -->
-![Dashboard](./screenshots/dashboard.png)
-
-### 📚 Session Page — Questions & Answers
-<!-- Add your session page screenshot here -->
-![Session Page](./screenshots/session.png)
-
-### 🎯 Mock Interview & Score Report
-<!-- Add your mock interview screenshot here -->
-![Mock Interview](./screenshots/mock-interview.png)
 
 ---
 
